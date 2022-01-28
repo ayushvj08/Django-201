@@ -65,18 +65,20 @@ $ python tasks.py help # Show usage
 $ python tasks.py report # Statistics"""
         )
 
-    def check_dup_priority(self, key, val):
-
-        if key not in self.current_items:
-            self.current_items[key] = val
-
-        else:
-            self.check_dup_priority(key+1, self.current_items[key])
-            self.current_items.pop(key)
-            self.current_items[key] = val
-
     def add(self, args):
-        self.check_dup_priority(int(args[0]), args[1])
+
+        def check_dup_priority(key, val):
+
+            if key not in self.current_items:
+                self.current_items[key] = val
+
+            else:
+                check_dup_priority(key+1, self.current_items[key])
+                self.current_items.pop(key)
+                self.current_items[key] = val
+
+        check_dup_priority(int(args[0]), args[1])
+
         self.write_current()
         print(f"Added task: \"{args[1]}\" with priority {args[0]}")
 
@@ -100,14 +102,12 @@ $ python tasks.py report # Statistics"""
                 f"Error: item with priority {args[0]} does not exist. Nothing deleted.")
 
     def ls(self):
-        print(self.current_items)
         for index, item in enumerate(self.current_items.items()):
             print(f"{index+1}. {item[1]} [{item[0]}]")
 
     def report(self):
         print(f"Pending : {len(self.current_items)}")
         self.ls()
-        print(self.completed_items)
         print(f"\nCompleted : {len(self.completed_items)}")
         for index, task in enumerate(self.completed_items):
             print(f"{index+1}. {task.strip()}")
