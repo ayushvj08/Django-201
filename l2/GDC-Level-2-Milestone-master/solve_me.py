@@ -80,6 +80,8 @@ $ python tasks.py report # Statistics"""
         check_dup_priority(int(args[0]), args[1])
 
         self.write_current()
+        self.current_items.clear()
+        self.read_current()
         print(f"Added task: \"{args[1]}\" with priority {args[0]}")
 
     def done(self, args):
