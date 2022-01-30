@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      form {
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>All Tasks</h1>
+
+    <h3>Pending</h3>
+    {%for task in tasks%}
+    <form action="/complete_task/{{task.id}}" method="get">
+      <input
+        type="checkbox"
+        name="complete-task"
+        onchange="this.form.submit()"
+      />
+    </form>
+    {{task.id}}. {{task}}
+    <a href="/delete-task/{{task.id}}">delete</a> <br />
+    {%endfor%}
+    <h3>Completed</h3>
+    {%for completed_task in completed %} {{completed_task.id}}.
+    {{completed_task}}
+    <a href="/delete-task/{{completed_task.id}}">delete</a> <br />
+    {%endfor%}
+
+    <br />
+    <a href="/tasks">Back</a>
+  </body>
+</html>

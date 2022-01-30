@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Manager Application</title>
+  </head>
+  <style>
+    body {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    form {
+      display: inline-block;
+    }
+  </style>
+  <body>
+    <h1>Task Manager App</h1>
+    <form action="/add-task" method="get">
+      <input
+        type="text"
+        placeholder="Add a new task ..."
+        autofocus
+        name="task"
+      />
+      <button type="submit">Add Task</button>
+    </form>
+    <br />
+    <br />
+    {%for task in tasks%}
+    <form action="/complete_task/{{task.id}}" method="get">
+      <input
+        type="checkbox"
+        onchange="this.form.submit()"
+        name="mark-completed"
+      />
+    </form>
+    {{task.id}}. {{task}}
+    <a href="/delete-task/{{task.id}}">delete</a> <br />
+    {%endfor%}
+    <br />
+    <a href="/all_tasks">List all Tasks</a><br />
+    <a href="/completed_tasks">Show Completed Tasks</a>
+  </body>
+</html>
