@@ -29,14 +29,13 @@ class TaskFormMixin(ModelFormMixin):
             priority = form.cleaned_data["priority"]
             tasks = Task.objects.filter(completed=False, deleted=False,  user=self.request.user)
             objs = []
-            same_priority_task = tasks.filter(priority=priority)
-            while same_priority_task.exists():
-                task = same_priority_task[0]
-                task.priority = priority + 1
-                objs.append(task)
+            same_priority_task = tasks.filter(priority=priority).first()
+            while same_priority_task:
+                same_priority_task.priority = priority + 1
+                objs.append(same_priority_task)
                 priority +=1
-                same_priority_task = tasks.filter(priority=priority)
-                
+                same_priority_task = tasks.filter(priority=priority).first()
+
             Task.objects.bulk_update(objs, ['priority'])
 
         self.object = form.save()
