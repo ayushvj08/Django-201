@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework.views import APIView
 from .models import Task, STATUS_CHOICES, TaskHistory
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.serializers import ModelSerializer
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend,FilterSet,CharFilter,ChoiceFilter, DateTimeFilter
@@ -22,12 +22,12 @@ class TaskSerializer(ModelSerializer):
         fields = ["id", "title", "completed", "status", "priority"]
 
 class TaskHistorySerializer(ModelSerializer):
-    task = TaskSerializer(read_only=False)
+    task = TaskSerializer(read_only=True)
     class Meta:
         model = TaskHistory
         fields = ["id", "status", "task", "created_date"]
     
-class HistoryViewSet(LoginRequiredMixin, ModelViewSet):
+class HistoryViewSet(ReadOnlyModelViewSet):
     queryset = TaskHistory.objects.all()
     serializer_class = TaskHistorySerializer
     permission_classes = (IsAuthenticated,)
@@ -36,19 +36,7 @@ class HistoryViewSet(LoginRequiredMixin, ModelViewSet):
     def get_queryset(self):
         return TaskHistory.objects.filter(task__user=self.request.user)
 
-    """ Dynamically create a TaskHistory with a simultaneous new Task """
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        task = Task.objects.create(**serializer.data['task'], user=self.request.user)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    """   Currently Accepting no Updates  """
-    def update(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-
-class TaskViewSet(LoginRequiredMixin, ModelViewSet):
+class TaskViewSet(ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = (IsAuthenticated,)
