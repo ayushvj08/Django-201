@@ -1,4 +1,3 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework.views import APIView
 from .models import Task, STATUS_CHOICES, TaskHistory
 from rest_framework.response import Response
@@ -6,7 +5,6 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.serializers import ModelSerializer
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend,FilterSet,CharFilter,ChoiceFilter, DateTimeFilter
-from rest_framework import status
 
 class TaskFilter(FilterSet):
     title = CharFilter(lookup_expr="icontains")
@@ -20,6 +18,29 @@ class TaskSerializer(ModelSerializer):
     class Meta:
         model = Task
         fields = ["id", "title", "completed", "status", "priority"]
+
+    def save(self, **kwargs):
+        validated_data = {**self.validated_data, **kwargs}
+
+        if self.instance is not None:
+            status = TaskSerializer(data=validated_data).initial_data.get('status')
+            if self.instance.status != status:
+                task_history = TaskHistory(status=status, task=self.instance)
+                task_history.save()
+
+            self.instance = self.update(self.instance, validated_data)
+            assert self.instance is not None, (
+                '`update()` did not return an object instance.'
+            )
+        else:
+            self.instance = self.create(validated_data)
+            task_history = TaskHistory(status=self.instance.status, task=self.instance)
+            task_history.save()
+            assert self.instance is not None, (
+                '`create()` did not return an object instance.'
+            )
+
+        return self.instance
 
 class TaskHistorySerializer(ModelSerializer):
     task = TaskSerializer(read_only=True)

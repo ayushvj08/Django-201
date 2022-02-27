@@ -23,10 +23,6 @@ class Task(models.Model):
     def __str__(self):
         return self.title
 
-@receiver(post_save, sender=Task)
-def historysave(sender, instance, **kwargs):
-    task_history = TaskHistory(status=instance.status, task=instance)
-    task_history.save()
 
 class TaskHistory(models.Model):
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default=STATUS_CHOICES[0][0])
