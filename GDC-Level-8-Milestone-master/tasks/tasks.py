@@ -6,7 +6,7 @@ from django.core.mail import send_mail
 
 @app.task
 def send_email_reminder():
-    print('Polling for Email Processing every 55 seconds ...')
+    print('Polling for Email Processing every 59 seconds ...')
     for user in User.objects.all():
         if user.taskreminder_set.first():
             qs = Task.objects.filter(user=user, deleted=False)
@@ -30,6 +30,6 @@ def send_email_reminder():
 app.conf.beat_schedule = {
     'key':{
         'task':'tasks.tasks.send_email_reminder',
-        'schedule': timedelta(seconds=55),
+        'schedule': timedelta(seconds=59),
     }
 }
