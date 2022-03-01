@@ -1,0 +1,101 @@
+{% extends 'base.html' %} {% block content %}
+<div class="title-wrapper">
+  <h1 class="title">Hi {{request.user.username}}</h1>
+  <form action="/user/logout/" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Log out" style="color: red" />
+  </form>
+</div>
+
+<p class="mt-6">
+  {% if request.user.taskreminder_set.first %}
+  <a href="/task/{{request.user.taskreminder_set.first.id}}/edit_mail_time/"
+    >Daily Report Time</a
+  >
+  {%else%}
+  <a href="/task/set_mail_time/">Set Daily Report Time</a>
+  {%endif%}
+  <!-- {% if request.path == "/task/list/" %} {{c_t.count}} of {{tasks.all.count}}
+  tasks completed {%endif%} -->
+</p>
+
+<div class="category-container">
+  <a href="/task/list/"><p class="rounded-full category-title">All</p></a>
+  <a href="/task/list/pending/"
+    ><p class="rounded-full category-title">Pending</p></a
+  >
+  <a href="/task/list/completed/"
+    ><p class="rounded-full category-title">Completed</p></a
+  >
+</div>
+
+{% for task in tasks %}
+<div class="task-container rounded-lg">
+  <div class="task-info">
+    {% if task.completed %}
+    <p class="task-title" style="color: red; text-decoration: line-through">
+      {{task.title}}
+    </p>
+    <p style="color: #9b9b9b">{{task.created_date|date:"D j M"}}</p>
+    {%else%}
+    <p class="task-title">{{task.title}}</p>
+    <p style="color: #717272; font-weight: 400">
+      {{task.created_date|date:"D j M"}}
+    </p>
+    {%endif%}
+  </div>
+  <div class="task-actions">
+    <a class="task-links" href="/task/{{task.id}}/update/">
+      <!-- Edit SVG Icon -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-8 w-8 rounded-lg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="white"
+        style="background-color: rgb(34, 201, 178); padding: 5px"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+        />
+      </svg>
+      <!--  -->
+    </a>
+
+    <form method="post" action="/task/{{task.id}}/delete/">
+      {% csrf_token %}
+      <button
+        class="task-links"
+        type="submit"
+        onclick="return confirm('Are you sure you want to delete this?')"
+      >
+        <!-- Delete SVG Icon -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-8 w-8 rounded-lg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="white"
+          style="background-color: red; padding: 5px"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
+        </svg>
+        <!--  -->
+      </button>
+    </form>
+  </div>
+</div>
+
+{%endfor%}
+<form action="/task/new/">
+  <button type="submit" class="button mt-4 rounded-lg">Add</button>
+</form>
+{% endblock content %}

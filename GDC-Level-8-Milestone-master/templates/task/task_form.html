@@ -1,0 +1,27 @@
+{% extends 'task/base.html' %} {% block content %}
+<h1 class="title">
+  {% if request.path == '/task/new/' %} Create {% else %} Update {% endif %}
+  Todo
+</h1>
+<form action="" method="post">
+  {% csrf_token %}
+  <p class="mt-12">Title</p>
+  {{form.title}}
+  <p class="mt-3">Description</p>
+  {{form.description}}
+
+  <p class="mt-3">Priority</p>
+  {{form.priority}}
+  <br />
+
+  <div class="mt-3 checkbox-wrapper">
+    {{form.completed}}
+    <p class="p-2">Completed</p>
+  </div>
+
+  <button type="submit" class="button mt-4 rounded-lg">
+    {% if request.path == '/task/new/' %} Add {% else %} Save {% endif %}
+  </button>
+</form>
+
+{% endblock content %}

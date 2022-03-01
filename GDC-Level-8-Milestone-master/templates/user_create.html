@@ -1,0 +1,11 @@
+{% extends 'base.html' %} {% block content %}
+<h1 class="title">Todo Manager</h1>
+<h3 class="mt-6 mb-4">Signup</h3>
+
+<form method="post">
+  {{form}} {% csrf_token %} {{form.errors}}
+
+  <br />
+  <button type="submit" class="button mt-4 rounded-lg">Signup</button>
+</form>
+{% endblock content %}
