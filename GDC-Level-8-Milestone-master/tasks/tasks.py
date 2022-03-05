@@ -17,14 +17,13 @@ def send_email_reminder():
         cancelled = qs.filter(status='CANCELLED')
         email_content = f"""You have {pending.count()} pending tasks, {completed.count()} completed tasks,\n {in_progress.count()} tasks in progress and {cancelled.count()} tasks cancelled"""
 
-        # mail_time = user.taskreminder_set.first().reminder_time
-        # if mail_time.hour == datetime.now().hour and mail_time.minute == datetime.now().minute:
         send_mail(
         'Mail from django task manager',
         email_content,
         'django@service.com',
         ['test@gmail.com']  ## user.email
         )
+        
         print(f'completed Processing user_id {user.id} ')
 
 
