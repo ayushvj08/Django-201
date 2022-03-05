@@ -8,7 +8,6 @@ from django.core.mail import send_mail
 def send_email_reminder():
     print('Polling for Email Processing every 60 seconds ...')
     task_reminders=TaskReminder.objects.filter(reminder_time__range=[datetime.now(), datetime.now()+timedelta(seconds=60)])
-    print(task_reminders)
     for task_reminder in task_reminders:
         user = task_reminder.user
         qs = Task.objects.filter(user=user, deleted=False)
