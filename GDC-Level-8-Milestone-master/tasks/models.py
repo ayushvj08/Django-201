@@ -1,9 +1,9 @@
 from datetime import datetime
-from re import T
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 STATUS_CHOICES = (
     ("PENDING", "PENDING"),
@@ -32,5 +32,5 @@ class TaskHistory(models.Model):
 
 class TaskReminder(models.Model):
     reminder_time = models.TimeField(blank=True)
-    last_sent = models.DateTimeField(default=datetime.now())
+    last_sent = models.DateTimeField(default=datetime.now().astimezone())
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)

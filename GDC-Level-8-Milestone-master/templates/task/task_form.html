@@ -1,7 +1,7 @@
-{% extends 'task/base.html' %} {% block content %}
+{% extends 'base.html' %} {% block content %}
 <h1 class="title">
   {% if request.path == '/task/new/' %} Create {% else %} Update {% endif %}
-  Todo
+  Task
 </h1>
 <form action="" method="post">
   {% csrf_token %}
