@@ -1,3 +1,4 @@
+from datetime import datetime
 from re import T
 from django.db import models
 from django.db.models.signals import post_save
@@ -31,4 +32,5 @@ class TaskHistory(models.Model):
 
 class TaskReminder(models.Model):
     reminder_time = models.TimeField(blank=True)
+    last_sent = models.DateTimeField(default=datetime.now())
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
